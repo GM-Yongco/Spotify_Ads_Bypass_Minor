@@ -33,15 +33,21 @@ current_playing_client = spotipy.Spotify(
 def current_playing_song():
 
 	result = current_playing_client.currently_playing()
-	return_val = "currently_playing_type is an ad"
+	return_val = "ad"
 
 	if(str(result) == 'None'):
 		return_val = "None"
-	elif(result['currently_playing_type'] == 'ad'):
-		return_val = "ad"
+	elif(result['currently_playing_type'] != "track"):
+		return_val = result['currently_playing_type']
+
+		# recently learned that 'currently playing type can be'
+		# track, episode, or ad andmaybe theres more kinds
+		# ¯\_(ツ)_/¯ 
+
 	else:
 		return_val = str(result['item']['name'])
 
+	
 	return return_val
 
 # ========================================================================
@@ -72,6 +78,9 @@ def is_session_mute(name = "Spotify.exe"):
 # ========================================================================
 
 def main():
+	start_time = time.strftime("%y/%m/%d %H:%M", time.localtime())
+	print(f"\n\n{start_time}")
+
 	time_delta = 5
 	time_total = 0
 	
