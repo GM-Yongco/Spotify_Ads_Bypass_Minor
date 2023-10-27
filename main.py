@@ -10,7 +10,7 @@ from spotipy.oauth2 import SpotifyOAuth
 
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, ISimpleAudioVolume
+from pycaw.pycaw import AudioUtilities, ISimpleAudioVolume
 
 # ========================================================================
 # SPOTIFY API 
