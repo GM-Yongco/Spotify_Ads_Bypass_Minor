@@ -74,28 +74,40 @@ def is_session_mute(name = "Spotify.exe"):
 	return volume.GetMute()
 
 # ========================================================================
+# TIME 
+# ========================================================================
+
+def time_current_print():
+	now = time.strftime("%y/%m/%d %H:%M", time.localtime())
+	print(f"\n\n{now}")
+
+# ========================================================================
 # MAIN 
 # ========================================================================
 
 def main():
-	start_time = time.strftime("%y/%m/%d %H:%M", time.localtime())
-	print(f"\n\n{start_time}")
+	time_current_print()
 
 	time_delta = 5
 	time_total = 0
 	
-	while(True):
-		the_song = current_playing_song()
+	try:
+		while(True):
+			the_song = current_playing_song()
 
-		if(the_song == "ad"):
-			set_sesssion_mute()
-		elif(is_session_mute()):
-			set_sesssion_unmute()
+			if(the_song == "ad"):
+				set_sesssion_mute()
+			elif(is_session_mute()):
+				set_sesssion_unmute()
 
-		print(f"Time check: {time_total:5}\tSong: {the_song}")
+			print(f"Time check: {time_total:5}\tSong: {the_song}")
 
-		time.sleep(time_delta)
-		time_total += time_delta
+			time.sleep(time_delta)
+			time_total += time_delta
+
+	except Exception as error:
+		time_current_print()
+		print("An exception occurred:", error)
 
 if __name__ == '__main__':
 	print("\nSTART ----------------------------------------")
