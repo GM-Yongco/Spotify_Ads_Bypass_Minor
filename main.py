@@ -65,6 +65,8 @@ def current_playing_song(client = default_client)->str:
 # PYCAW
 # ========================================================================
 
+# add decorator for every function group for excpetions
+
 def get_session(name = "Spotify.exe"):
 	# if return for loop is not desirable
 	# chnage in the future if possible
@@ -113,35 +115,40 @@ def log(x:str, path = "./log.txt"):
 # MAIN 
 # ========================================================================
 
+def main_loop():
+	time_delta = 5
+	time_total = 0
+	
+	spotify_client = redefine_client()
+
+	while(True):
+		the_song = current_playing_song(spotify_client)
+		log(f"Time check: {time_total:5}\tSong: {the_song}")
+
+		if(the_song == "ad"):
+			set_sesssion_mute()
+		elif(is_session_mute()):
+			set_sesssion_unmute()
+
+		time.sleep(time_delta)
+		time_total += time_delta
+
 def main():
 	log(time_current())
 
-	try:
-		time_delta = 5
-		time_total = 0
-		
-		spotify_client = redefine_client()
-
-		while(True):
-			the_song = current_playing_song(spotify_client)
-			log(f"Time check: {time_total:5}\tSong: {the_song}")
-
-			if(the_song == "ad"):
-				set_sesssion_mute()
-			elif(is_session_mute()):
-				set_sesssion_unmute()
-
-			time.sleep(time_delta)
-			time_total += time_delta
-
-
-	except Exception as error:
-		log(f"An exception occurred at function 'main' :{error}")
-		
-	log(time_current())
+	i = 1
+	while(i<5):
+		# we basically just wait for the timeout error
+		try:
+			main_loop()
+		except Exception as error:
+			log(time_current())
+			log(f"exeption number {i}")
+			log(f"An exception occurred at function 'main' :{error}")
+		i += 1
 
 if __name__ == '__main__':
-	print("\nSTART ----------------------------------------")
+	log("\nSTART ----------------------------------------")
 	main()
 
-	print("\nEND ------------------------------------------")
+	log("\nEND ------------------------------------------")
