@@ -30,9 +30,20 @@ current_playing_client = spotipy.Spotify(
 		)
 	)
 
-def current_playing_song():
+def define_client():
+	client = spotipy.Spotify(
+	auth_manager = SpotifyOAuth(
+			client_id       = ID, 
+			client_secret   = SECRET, 
+			scope           = custom_scope, 
+			redirect_uri    = REDIRECT_URI
+		)
+	)
+	return client
 
-	result = current_playing_client.currently_playing()
+def current_playing_song(client):
+
+	result = client.currently_playing()
 	return_val = "ad"
 
 	if(str(result) == 'None'):
@@ -55,6 +66,9 @@ def current_playing_song():
 # ========================================================================
 
 def get_session(name = "Spotify.exe"):
+	# if return for loop is not desirable
+	# chnage in the future if possible
+
 	sessions = AudioUtilities.GetAllSessions()
 	for session in sessions:
 		if session.Process and (session.Process.name() == name):
@@ -77,37 +91,54 @@ def is_session_mute(name = "Spotify.exe"):
 # TIME 
 # ========================================================================
 
-def time_current_print():
+def time_current()->str:
 	now = time.strftime("%y/%m/%d %H:%M", time.localtime())
-	print(f"\n\n{now}")
+	return f"\n{now}"
+
+# ========================================================================
+# TEXT LOG
+# ========================================================================
+
+def log(x:str, path = "./log.txt"):
+	try:
+		file = open(path, "a")
+		file.write(f"\n{x}")
+		file.close
+	except Exception as error:
+		print("An exception occurred at function 'log' :", error)
+
+	print(x)
 
 # ========================================================================
 # MAIN 
 # ========================================================================
 
 def main():
-	time_current_print()
+	log(time_current())
 
 	time_delta = 5
 	time_total = 0
 	
+	spotify_client = define_client()
+
 	try:
 		while(True):
-			the_song = current_playing_song()
+			the_song = current_playing_song(spotify_client)
+			log(f"Time check: {time_total:5}\tSong: {the_song}")
 
 			if(the_song == "ad"):
 				set_sesssion_mute()
 			elif(is_session_mute()):
 				set_sesssion_unmute()
 
-			print(f"Time check: {time_total:5}\tSong: {the_song}")
-
 			time.sleep(time_delta)
 			time_total += time_delta
 
+
 	except Exception as error:
-		time_current_print()
-		print("An exception occurred:", error)
+		log(f"An exception occurred at function 'main' :{error}")
+		
+	log(time_current())
 
 if __name__ == '__main__':
 	print("\nSTART ----------------------------------------")

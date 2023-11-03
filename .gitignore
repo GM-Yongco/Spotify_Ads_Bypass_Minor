@@ -1,9 +1,11 @@
 redirect_uri.txt
 client_secret.txt
 client_ID.txt
+
+log.txt
+
 tempCodeRunnerFile.py
-Area51.py
-Area52.py
+
 __pycache__
 *.cache
 .vs
