@@ -20,28 +20,28 @@ ID = open("./REFERENCES/client_ID.txt", "r").read()
 SECRET = open("./REFERENCES/client_secret.txt", "r").read()
 REDIRECT_URI = open("./REFERENCES/redirect_uri.txt", "r").read()
 
-custom_scope = "user-read-currently-playing"
-current_playing_client = spotipy.Spotify(
+default_scope = "user-read-currently-playing"
+default_client = spotipy.Spotify(
 	auth_manager = SpotifyOAuth(
 			client_id       = ID, 
 			client_secret   = SECRET, 
-			scope           = custom_scope, 
+			scope           = default_scope, 
 			redirect_uri    = REDIRECT_URI
 		)
 	)
 
-def define_client():
-	client = spotipy.Spotify(
+def redefine_client():
+	new_client = spotipy.Spotify(
 	auth_manager = SpotifyOAuth(
 			client_id       = ID, 
 			client_secret   = SECRET, 
-			scope           = custom_scope, 
+			scope           = default_scope, 
 			redirect_uri    = REDIRECT_URI
 		)
 	)
-	return client
+	return new_client
 
-def current_playing_song(client):
+def current_playing_song(client = default_client)->str:
 
 	result = client.currently_playing()
 	return_val = "ad"
@@ -116,12 +116,12 @@ def log(x:str, path = "./log.txt"):
 def main():
 	log(time_current())
 
-	time_delta = 5
-	time_total = 0
-	
-	spotify_client = define_client()
-
 	try:
+		time_delta = 5
+		time_total = 0
+		
+		spotify_client = redefine_client()
+
 		while(True):
 			the_song = current_playing_song(spotify_client)
 			log(f"Time check: {time_total:5}\tSong: {the_song}")
