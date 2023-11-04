@@ -7,5 +7,6 @@ log.txt
 tempCodeRunnerFile.py
 
 __pycache__
+desktop.ini
 *.cache
 .vs
