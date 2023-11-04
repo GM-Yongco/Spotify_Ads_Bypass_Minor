@@ -10,7 +10,7 @@ from spotipy.oauth2 import SpotifyOAuth
 
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
-from pycaw.pycaw import AudioUtilities, ISimpleAudioVolume
+from pycaw.pycaw import AudioUtilities, ISimpleAudioVolume, IAudioEndpointVolume
 
 # ========================================================================
 # SPOTIFY API 
@@ -67,6 +67,19 @@ def current_playing_song(client = default_client)->str:
 
 # add decorator for every function group for excpetions
 
+def get_master_volume():
+	devices = AudioUtilities.GetSpeakers()
+	interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+	volume = cast(interface, POINTER(IAudioEndpointVolume))
+
+	return volume
+
+def set_master_volume(vol_level = 0):
+	# note on the volume level decibel thingy range of (0, 65)
+	volume = get_master_volume()
+	volume.SetMasterVolumeLevel(vol_level, None)
+
+
 def get_session(name = "Spotify.exe"):
 	# if return for loop is not desirable
 	# chnage in the future if possible
@@ -88,6 +101,10 @@ def set_sesssion_unmute(name = "Spotify.exe"):
 def is_session_mute(name = "Spotify.exe"):
 	volume = get_session(name)
 	return volume.GetMute()
+
+def set_session_volume(name = "Spotify.exe", vol_level = 0.5):
+	volume = get_session(name)
+	volume.SetMasterVolume(vol_level, None)
 
 # ========================================================================
 # TIME 
@@ -136,9 +153,13 @@ def main_loop():
 def main():
 	log(time_current())
 
+	set_master_volume()
+	set_session_volume()
+
 	i = 1
 	while(i<5):
 		# we basically just wait for the timeout error
+		# specifically 'Connection aborted.', RemoteDisconnected('Remote end closed connection without response'
 		try:
 			main_loop()
 		except Exception as error:
