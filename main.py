@@ -106,6 +106,23 @@ def set_session_volume(name = "Spotify.exe", vol_level = 0.5):
 	volume = get_session(name)
 	volume.SetMasterVolume(vol_level, None)
 
+
+# ========================================================================
+
+def mute_all_of_session_name(name = "Spotify.exe"):
+	sessions = AudioUtilities.GetAllSessions()
+	for session in sessions:
+		if session.Process and (session.Process.name() == name):
+			volume =  session._ctl.QueryInterface(ISimpleAudioVolume)
+			volume.SetMute(1, None)
+
+def unmute_all_of_session_name(name = "Spotify.exe"):
+	sessions = AudioUtilities.GetAllSessions()
+	for session in sessions:
+		if session.Process and (session.Process.name() == name):
+			volume =  session._ctl.QueryInterface(ISimpleAudioVolume)
+			volume.SetMute(0, None)
+
 # ========================================================================
 # TIME 
 # ========================================================================
@@ -135,7 +152,7 @@ def log(x:str, path = "./log.txt"):
 def main_loop():
 	time_delta = 5
 	time_total = 0
-	
+
 	spotify_client = redefine_client()
 
 	while(True):
@@ -143,9 +160,9 @@ def main_loop():
 		log(f"Time check: {time_total:5}\tSong: {the_song}")
 
 		if(the_song == "ad"):
-			set_sesssion_mute()
+			mute_all_of_session_name()
 		elif(is_session_mute()):
-			set_sesssion_unmute()
+			unmute_all_of_session_name()
 
 		time.sleep(time_delta)
 		time_total += time_delta
@@ -153,8 +170,8 @@ def main_loop():
 def main():
 	log(time_current())
 
-	set_master_volume()
-	set_session_volume()
+	# set_master_volume()
+	# set_session_volume()
 
 	i = 1
 	while(i<5):
